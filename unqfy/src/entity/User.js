@@ -1,8 +1,8 @@
 class User {
 
-    constructor(name) {
+    constructor(email) {
         this.id;
-        this.name = name;
+        this.name;
         this.tracksHeard = [];
     }
 
@@ -37,6 +37,7 @@ class User {
         const t = new Set(this.tracksHeard);
         this.tracksHeard = Array.from(t);
     }
+
 
 }
 

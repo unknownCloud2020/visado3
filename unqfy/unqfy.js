@@ -10,11 +10,14 @@ const Track = require('./src/entity/Track');
 const User = require('./src/entity/User');
 const SAVE_FILENAME = 'data.json';
 const spoCliente = require('./src/clientApi/SpotifyCliente');
+const Observable = require('./src/observer/Observable');
+const ObserverNewletter = require('./src/observer/ObserverNewsletter');
+const ObserverLogging = require('./src/observer/ObserverLogging')
 const spotifyClientInstance = new spoCliente.SpotifyCliente();
 
 
 
-class UNQfy {
+class UNQfy extends Observable {
 
   constructor() {
     this.artists = [];
@@ -25,6 +28,8 @@ class UNQfy {
     this.idIncrementAlbum = new IdAutoIncrement();
     this.idIncrementTrack = new IdAutoIncrement();
     this.idIncrementUser = new IdAutoIncrement();
+    this.addSubscribe(new ObserverNewletter());
+    this.addSubscribe(new ObserverLogging());
   }
 
   // artistData: objeto JS con los datos necesarios para crear un artista
@@ -107,6 +112,8 @@ class UNQfy {
     }
     album.setId(this.idIncrementAlbum.id);
     artistRecovered.setAlbum(album);
+    this.changed(artistRecovered,album);
+
     return album;
   }
 

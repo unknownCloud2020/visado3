@@ -1,5 +1,5 @@
 
-class Author {
+class Author  {
 
   constructor(name, country) {
     this.id;
@@ -79,6 +79,7 @@ class Author {
   setUnqfy(unqfy) {
     this.unqfy = unqfy;
   }
+
 
 }
 
