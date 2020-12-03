@@ -1,9 +1,10 @@
 // imports
 const express = require('express');
 const bodyParse = require('body-parser');
+const path = require('path');
 var methodOverride = require('method-override');
 const BadRequestError = require('./BadRequestError');
-const port = process.env.PORT || 9096;
+const port = process.env.PORT || 8086;
 const app = express();
 
 // configs
@@ -24,7 +25,7 @@ var log4js = require("log4js");
 
 var logger = log4js.getLogger();
 log4js.configure({
-    appenders: { cheese: { type: "file", filename: "cheese.log" } },
+    appenders: { cheese: { type: "file", filename: path.join(__dirname, 'log/cheese.log') } },
     categories: { default: { appenders: ["cheese"], level: "info" } }
 });
 

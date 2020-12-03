@@ -1,6 +1,7 @@
 
 const picklify = require('picklify'); // para cargar/guarfar unqfy
 const fs = require('fs'); // para cargar/guarfar unqfy
+const path  = require('path');
 const Author = require('./src/entity/Author');
 const IdAutoIncrement = require('./src/entity/IdAutoIncrement');
 const IdAutoIncrementPlaylist = require('./src/entity/sequence/IdAutoIncrementPlaylist');
@@ -8,10 +9,11 @@ const Playlist = require('./src/entity/Playlist');
 const Album = require('./src/entity/Album');
 const Track = require('./src/entity/Track');
 const User = require('./src/entity/User');
-const SAVE_FILENAME = 'data.json';
+const SAVE_FILENAME = path.join(__dirname, 'data.json');
 const spoCliente = require('./src/clientApi/SpotifyCliente');
 const spotifyClientInstance = new spoCliente.SpotifyCliente();
-
+const LogginClient = require('./src/clientApi/LogginClient');
+const LogginClientInstance = new LogginClient.LogginClient()
 
 
 class UNQfy {
@@ -42,6 +44,7 @@ class UNQfy {
     const artist = new Author(artistData.name, artistData.country);
     artist.setId(this.idIncrementArtist.id);
     this.artists.push(artist);
+    LogginClientInstance.info(`Se ha agregado el artista: ${artist.name}`)
     return artist;
   }
 
@@ -528,7 +531,7 @@ class UNQfy {
     return unqfy;
   }
 
-  saveUNQfy(unqfy, filename = 'data.json') {
+  saveUNQfy(unqfy, filename = SAVE_FILENAME) {
     unqfy.save(filename);
   }
 

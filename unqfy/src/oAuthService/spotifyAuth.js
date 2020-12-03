@@ -12,7 +12,8 @@ const request = require('request'); // "Request" library
 const querystring = require('querystring');
 
 const PORT = 3000;
-const CREDENTIALS_FILENAME = 'spotifyCreds.json';
+const pathCreds = './unqfy/src/oAuthService';
+const CREDENTIALS_FILENAME =  path.resolve(pathCreds, 'spotifyCreds.json');
 
 const CLIENT_ID = '912c703a3f524cfca87d04cbdceccb42'; // Your client id
 const CLIENT_SECRET = '93e5f28771be4c979aeb35a2a4e0289a'; // Your secret
