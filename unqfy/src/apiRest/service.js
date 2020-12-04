@@ -76,7 +76,7 @@ artists.get('/artists/:artistId', (req, res, next) => {
     if (!artist) {
         throw next(new nonExistentArtist());
     }
-
+    
     res.status(200).json(artist);
 });
 
