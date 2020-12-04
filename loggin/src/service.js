@@ -53,7 +53,7 @@ app.post('/api/log', function (req, res, next) {
     res.json("ok");
 });
 
-app.post('/api/ping', function (req, res) {
+app.get('/api/ping', function (req, res) {
     res.status(200);
     res.json("pong");
 });

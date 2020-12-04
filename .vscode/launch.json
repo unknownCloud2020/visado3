@@ -16,5 +16,11 @@
             "name": "unqfy API",
             "program": "${workspaceFolder}/unqfy/src/apiRest/service.js"
         },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "monitor API",
+            "program": "${workspaceFolder}/monitor/src/service.js"
+        },
     ]
 }
