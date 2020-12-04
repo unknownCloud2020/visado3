@@ -11,7 +11,7 @@ const User = require('./src/entity/User');
 const SAVE_FILENAME = 'data.json';
 const spoCliente = require('./src/clientApi/SpotifyCliente');
 const Observable = require('./src/observer/Observable');
-const ObserverNewletter = require('./src/observer/ObserverNewsletter');
+const ObserverNewletter = require('./src/observer/ObserverNewletter');
 const ObserverLogging = require('./src/observer/ObserverLogging')
 const spotifyClientInstance = new spoCliente.SpotifyCliente();
 
@@ -47,6 +47,8 @@ class UNQfy extends Observable {
     const artist = new Author(artistData.name, artistData.country);
     artist.setId(this.idIncrementArtist.id);
     this.artists.push(artist);
+    this.changed(artist);
+
     return artist;
   }
 
@@ -155,8 +157,9 @@ class UNQfy extends Observable {
     track.setId(this.idIncrementTrack.id);
     albumRecovered.setTrack(track);
     track.setAlbum(albumRecovered);
-    return track;
+    this.changed(track);
 
+    return track;
   }
 
   getArtistAlbum(id) {

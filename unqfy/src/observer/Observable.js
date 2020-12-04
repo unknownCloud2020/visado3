@@ -13,8 +13,8 @@ class Observable {
         this.subscribers.shift(service);
     }
 
-    changed(artist,album) {
-        this.subscribers.forEach(s => {s.update(artist,album)})
+    changed(artist,album,track) {
+        this.subscribers.forEach(s => {s.update(artist,album,track)})
     }
 }
 
