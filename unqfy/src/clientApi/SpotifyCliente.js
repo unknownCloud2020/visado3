@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 const fs = require('fs'); // para cargar/guarfar unqfy
 const path = require('path');
-const pathCreds = './src/oAuthService';
+const pathCreds = './unqfy/src/oAuthService';
 const rp = require('request-promise');
 const BASE_URL = 'https://api.spotify.com/v1/';
 

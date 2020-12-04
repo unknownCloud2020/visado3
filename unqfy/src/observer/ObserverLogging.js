@@ -7,7 +7,7 @@ class ObserverLogging extends Observer {
     }
 
     update(artist,album,track){
-        
+        //LogginClientInstance.info(`Se ha agregado el artista: ${artist.name}`)
     }
 }
 

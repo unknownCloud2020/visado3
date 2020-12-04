@@ -1,6 +1,7 @@
 
 const picklify = require('picklify'); // para cargar/guarfar unqfy
 const fs = require('fs'); // para cargar/guarfar unqfy
+const path  = require('path');
 const Author = require('./src/entity/Author');
 const IdAutoIncrement = require('./src/entity/IdAutoIncrement');
 const IdAutoIncrementPlaylist = require('./src/entity/sequence/IdAutoIncrementPlaylist');
@@ -8,13 +9,14 @@ const Playlist = require('./src/entity/Playlist');
 const Album = require('./src/entity/Album');
 const Track = require('./src/entity/Track');
 const User = require('./src/entity/User');
-const SAVE_FILENAME = 'data.json';
+const SAVE_FILENAME = path.join(__dirname, 'data.json');
 const spoCliente = require('./src/clientApi/SpotifyCliente');
 const Observable = require('./src/observer/Observable');
 const ObserverNewletter = require('./src/observer/ObserverNewletter');
 const ObserverLogging = require('./src/observer/ObserverLogging')
 const spotifyClientInstance = new spoCliente.SpotifyCliente();
-
+const LogginClient = require('./src/clientApi/LogginClient');
+const LogginClientInstance = new LogginClient.LogginClient()
 
 
 class UNQfy extends Observable {
@@ -48,7 +50,6 @@ class UNQfy extends Observable {
     artist.setId(this.idIncrementArtist.id);
     this.artists.push(artist);
     this.changed(artist);
-
     return artist;
   }
 
@@ -538,7 +539,7 @@ class UNQfy extends Observable {
     return unqfy;
   }
 
-  saveUNQfy(unqfy, filename = 'data.json') {
+  saveUNQfy(unqfy, filename = SAVE_FILENAME) {
     unqfy.save(filename);
   }
 

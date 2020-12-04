@@ -7,7 +7,7 @@ ENV NODE_ENV=development
 ENV DEBUG=true
 
 # Crea un directorio y nos movemos ahí
-WORKDIR /home/node/unqfy
+WORKDIR /home/node/loggin
 
 # Copia el package.json package-lock.json en /home/node/my_node_app
 COPY package.json .
@@ -17,10 +17,10 @@ COPY package-lock.json .
 RUN ["npm", "install"]
 
 # Expone el puerto 5000 donde corre la aplicación
-EXPOSE 8083
+EXPOSE 8086
 
 # Copia los fuentes dentro del container
-COPY . /home/node/unqfy/
+COPY . /home/node/loggin/
 
 # Le da permisos al usuario node para escribir en /home/node/my_node_app
 # Como comentario, notar que el comando RUN nos permite ejecutar culquier comando bash valido.
@@ -31,7 +31,7 @@ USER node
 
 # Comando por defecto sino se provee uno al hacer docker run
 # El comando corre el servicio
-CMD [ "node", "src/apiRest/service.js" ]
+CMD [ "node", "src/service.js" ]
 
 # LISTO!
 
