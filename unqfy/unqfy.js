@@ -15,9 +15,6 @@ const Observable = require('./src/observer/Observable');
 const ObserverNewletter = require('./src/observer/ObserverNewletter');
 const ObserverLogging = require('./src/observer/ObserverLogging')
 const spotifyClientInstance = new spoCliente.SpotifyCliente();
-const LogginClient = require('./src/clientApi/LogginClient');
-const LogginClientInstance = new LogginClient.LogginClient()
-
 
 class UNQfy extends Observable {
 
