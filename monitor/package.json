@@ -21,6 +21,7 @@
     "express": "^4.17.1",
     "log4js": "^6.3.0",
     "method-override": "^3.0.0",
+    "request-promise": "^4.2.6",
     "winston-loggly-bulk": "^3.1.1"
   }
 }
