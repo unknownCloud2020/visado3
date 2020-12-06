@@ -5,9 +5,10 @@ const bodyParse = require('body-parser');
 const port = process.env.PORT || 8084;
 const unqfyCliente = require('../clients/UnqfyClient');
 const unqfyClientIntance = new unqfyCliente();
+const GMailAPIClient = require('../clients/GMailAPIClient');
+const gmailClient = new GMailAPIClient();
 
 let suscritores = [];
-
 
 function valid(data, expectedKeys) {
     return Object.keys(expectedKeys).every(key => {
@@ -50,11 +51,32 @@ function existentArtist(artistId) {
 
 function suscribesForArtistId(artistId) {
 
-    if(this.existentArtist(artistId)) {
-       const suscritoresFiltrados = this.suscritores.filter(s => s.artistId === artistId);
-       return suscritoresFiltrados;
+    if (this.existentArtist(artistId)) {
+        const suscritoresFiltrados = this.suscritores.filter(s => s.artistId === artistId);
+        return suscritoresFiltrados;
     }
-    
+
+}
+
+function send_mail(body,email) {
+    gmailClient.send_mail(
+        body.subject,
+        [
+            body.message
+        ],
+        {
+            "email": email,
+        },
+        {
+            "email": "unqfyNewsletter@gmail.com",
+        }
+    ).then((gmailResponse) => {
+        console.log("Mail enviado!");
+        console.log(gmailResponse);
+    }).catch((error) => {
+        console.error("Algo salió mal");
+        console.error(error);
+    })
 }
 
 newletterApp.post('/subscribe', (req, res, next) => {
@@ -73,13 +95,14 @@ newletterApp.post('/subscribe', (req, res, next) => {
 
 
 
+
 newletterApp.post('/notify', (req, res, next) => {
-    checkValidInput(req.body, { artistId: 'number', email: 'string' }, res, next);
-    
-    try {  
-       this.suscribesForArtistId(req.body.artistId).forEach(s => {  });
-        
-    } catch(error) {
+    //checkValidInput(req.body, { artistId: 'number', email: 'string' }, res, next);
+
+    try {
+        this.suscribesForArtistId(req.body.artistId).forEach(s => { send_mail(req.body,s[1]) });
+
+    } catch (error) {
         throw error;
     }
 
@@ -93,10 +116,10 @@ newletterApp.post('/unsubscribe', (req, res, next) => {
     checkValidInput(req.body, { artistId: 'number', email: 'string' }, res, next);
 
     try {
-        if(this.isSucribe(suscritor.email) && this.existentArtist(suscritor.artistId)) {
-          this.suscritores.unshift(suscritor);
+        if (this.isSucribe(suscritor.email) && this.existentArtist(suscritor.artistId)) {
+            this.suscritores.unshift(suscritor);
         }
-        
+
     } catch (error) {
         throw error;
     }
@@ -108,29 +131,30 @@ newletterApp.get('/subscriptions?artistId=<artistID>', (req, res, next) => {
 
     try {
 
-        if(this.existentArtist(suscritor.artistId)) {
-         suscritoresFiltrados = this.suscritores.filter(s => s.artistId === req.query.artistId);
+        if (this.existentArtist(suscritor.artistId)) {
+            suscritoresFiltrados = this.suscritores.filter(s => s.artistId === req.query.artistId);
         }
 
-    } catch(error){
+    } catch (error) {
         throw error;
-    } 
+    }
 
-    res.status(200).json({ artistId: req.query.artistId,
-                           subscriptors: suscritoresFiltrados
+    res.status(200).json({
+        artistId: req.query.artistId,
+        subscriptors: suscritoresFiltrados
     });
 });
 
 
 newletterApp.delete('/subscriptions', (req, res, next) => {
-     
+
     checkValidInput(req.body, { artistId: 'number' }, res, next);
-      
+
     try {
-        this.suscritores = this.suscribesForArtistId(req.body.artistId).filter(s => { !s.artistId === req.body.artistId});
-    } catch(error){
+        this.suscritores = this.suscribesForArtistId(req.body.artistId).filter(s => { !s.artistId === req.body.artistId });
+    } catch (error) {
         throw error;
-    } 
+    }
 
     res.status(200);
 });
