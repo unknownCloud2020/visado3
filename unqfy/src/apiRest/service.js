@@ -250,7 +250,7 @@ playlists.get('/playlists', (req, res, next) => {
     res.status(200).json(req.unqfy.searchPlaylist(name, durationLT, durationGT));
 });
 
-app.get('/api/ping', function (req, res) {
+rootApp.get('/api/ping', function (req, res) {
     res.status(200);
     res.json("pong");
 });

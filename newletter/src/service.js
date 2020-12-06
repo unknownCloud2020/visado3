@@ -1,13 +1,32 @@
 const express = require('express');
 const rootApp = express();
-const newsletterApp = express();
+const newletterApp = express();
 const bodyParse = require('body-parser');
-const port = process.env.PORT || 8085;
+const port = process.env.PORT || 8084;
 const unqfyCliente = require('../clients/UnqfyClient');
 const unqfyClientIntance = new unqfyCliente();
 
 let suscritores = [];
 
+
+function valid(data, expectedKeys) {
+    return Object.keys(expectedKeys).every(key => {
+        return (typeof data[key]) === expectedKeys[key];
+    });
+
+}
+
+function checkValidInput(data, expectedKeys, res, next) {
+    if (!valid(data, expectedKeys)) {
+        throw next(new badRequest());
+    }
+}
+
+function invalidJsonHandler(err, req, res, next) {
+    if (err) {
+        throw next(new badRequest());
+    }
+}
 
 function errorHandler(error, req, res, next) {
     const isHandlerError = errors.find(error => error === error);
@@ -19,6 +38,7 @@ function errorHandler(error, req, res, next) {
         res.json({ status: 500, errorCode: "INTERNAL_SERVER_ERROR" });
     }
 }
+
 
 function isSucribe(email) {
     return this.suscritores.any(s => s.email === email);
@@ -37,7 +57,7 @@ function suscribesForArtistId(artistId) {
     
 }
 
-newsletterApp.post('/subscribe', (req, res, next) => {
+newletterApp.post('/subscribe', (req, res, next) => {
     checkValidInput(req.body, { artistId: 'number', email: 'string' }, res, next);
 
     const suscritor = req.body;
@@ -53,7 +73,7 @@ newsletterApp.post('/subscribe', (req, res, next) => {
 
 
 
-newsletterApp.post('/notify', (req, res, next) => {
+newletterApp.post('/notify', (req, res, next) => {
     checkValidInput(req.body, { artistId: 'number', email: 'string' }, res, next);
     
     try {  
@@ -67,7 +87,7 @@ newsletterApp.post('/notify', (req, res, next) => {
 });
 
 
-newsletterApp.post('/unsubscribe', (req, res, next) => {
+newletterApp.post('/unsubscribe', (req, res, next) => {
     const suscritor = req.body;
 
     checkValidInput(req.body, { artistId: 'number', email: 'string' }, res, next);
@@ -83,7 +103,7 @@ newsletterApp.post('/unsubscribe', (req, res, next) => {
     res.status(200).json();
 });
 
-newsletterApp.get('/subscriptions?artistId=<artistID>', (req, res, next) => {
+newletterApp.get('/subscriptions?artistId=<artistID>', (req, res, next) => {
     const suscritoresFiltrados = []
 
     try {
@@ -102,7 +122,7 @@ newsletterApp.get('/subscriptions?artistId=<artistID>', (req, res, next) => {
 });
 
 
-newsletterApp.delete('/subscriptions', (req, res, next) => {
+newletterApp.delete('/subscriptions', (req, res, next) => {
      
     checkValidInput(req.body, { artistId: 'number' }, res, next);
       
@@ -115,10 +135,15 @@ newsletterApp.delete('/subscriptions', (req, res, next) => {
     res.status(200);
 });
 
+rootApp.get('/api/ping', function (req, res) {
+    res.status(200);
+    res.json("pong");
+});
+
 rootApp.use(bodyParse.urlencoded({ extended: true }));
 rootApp.use(bodyParse.json());
 rootApp.use(invalidJsonHandler);
-rootApp.use('/api', newsletter);
+rootApp.use('/api', newletterApp);
 
 rootApp.use((req, res) => {
     res.status(404);

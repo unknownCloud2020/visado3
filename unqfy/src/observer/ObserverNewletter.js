@@ -1,5 +1,5 @@
 const Observer = require("./Observer");
-const newletterClient = require('../');
+const newletterClient = require('../clientApi/NewletterClient');
 const newletterClientIntance = new newletterClient();
 
 class ObserverNewletter extends Observer {
@@ -8,7 +8,7 @@ class ObserverNewletter extends Observer {
 
   update(action, artist, album, track) {
     if (action === 'addAlbum') {
-      newletterCliente.notify(artist, album).then(
+      newletterClientIntance.notify(artist, album).then(
         response => response
       ).catch(
         error => error
@@ -17,7 +17,7 @@ class ObserverNewletter extends Observer {
     }
 
     if (action === 'deleteArtist') {
-      newletterCliente.notifyDeleteArtist(artist).then(
+      newletterClientIntance.notifyDeleteArtist(artist).then(
         response => response
       ).catch(
         error => error
@@ -25,9 +25,6 @@ class ObserverNewletter extends Observer {
 
     }
 
-
-
-    // endpoint
   }
 
 }
