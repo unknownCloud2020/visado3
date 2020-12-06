@@ -4,9 +4,8 @@ const newletterClientIntance = new newletterClient();
 
 class ObserverNewletter extends Observer {
 
-  constructor() { }
 
-  update(action, artist, album, track) {
+  update(action, artist, album, track, error) {
     if (action === 'addAlbum') {
       newletterClientIntance.notify(artist, album).then(
         response => response

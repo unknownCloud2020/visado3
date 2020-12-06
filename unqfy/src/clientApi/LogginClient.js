@@ -1,5 +1,5 @@
 const rp = require('request-promise');
-const BASE_URL = 'http://localhost:8086/api/log';
+const BASE_URL = process.env.LOGGIN_API_HOST;
 
 class LogginClient {
     constructor() {
@@ -17,7 +17,7 @@ class LogginClient {
     async info(message) {
         this.options.body = { message: message, level: 'info', service: 'unqfy' };
         rp.post(this.options).then(succes => {
-            console.log(succes)
+            
         }).catch(error => console.log(error));
     }
 

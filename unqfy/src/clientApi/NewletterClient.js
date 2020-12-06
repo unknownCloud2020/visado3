@@ -3,7 +3,7 @@ const rp = require('request-promise');
 class NewletterClient {
 
     constructor() {
-        this.BASE_URL = 'http://localhost:8085/api/';
+        this.BASE_URL = process.env.NEWSLETTER_API_HOST + '/';
     }
 
     async notify(artist,album) {
@@ -39,4 +39,4 @@ class NewletterClient {
 
 }
 
-module.exports = UnqfyClient;
+module.exports = NewletterClient;

@@ -3,7 +3,7 @@ const rp = require('request-promise');
 class UnqfyClient {
 
     constructor() {
-        this.BASE_URL = 'http://localhost:8084/api/';
+        this.BASE_URL = process.env.UNQFY_API_HOST + '/';
     }
 
     async artist(artistId) {

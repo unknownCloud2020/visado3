@@ -19,6 +19,7 @@ const spotifyClientInstance = new spoCliente.SpotifyCliente();
 class UNQfy extends Observable {
 
   constructor() {
+    super()
     this.artists = [];
     this.playlists = [];
     this.users = [];
@@ -46,7 +47,7 @@ class UNQfy extends Observable {
     const artist = new Author(artistData.name, artistData.country);
     artist.setId(this.idIncrementArtist.id);
     this.artists.push(artist);
-    this.changed('add',artist.id);
+    this.changed('addArtist', artist);
 
     return artist;
   }
@@ -112,7 +113,7 @@ class UNQfy extends Observable {
     }
     album.setId(this.idIncrementAlbum.id);
     artistRecovered.setAlbum(album);
-    this.changed('add',artistRecovered,album);
+    this.changed('addAlbum',artistRecovered,album);
 
     return album;
   }
@@ -155,7 +156,7 @@ class UNQfy extends Observable {
     track.setId(this.idIncrementTrack.id);
     albumRecovered.setTrack(track);
     track.setAlbum(albumRecovered);
-    this.changed('add',track);
+    this.changed('addTrack', null, null, track);
 
     return track;
   }
@@ -223,18 +224,18 @@ class UNQfy extends Observable {
 
   removeArtist(id) {
     const index = this.artists.findIndex(a => a.id === id);
+    this.changed('deleteArtist', this.artists[index]);
     if (index !== -1) {
       this.artists.splice(index, 1);
     }
-    this.changed('deleteArtist',artists[index]);
   }
 
   removeAlbum(id) {
     const artist = this.getArtistToAlbum(id);
     const albums = artist.albums;
     const indexAlbum = albums.findIndex(a => a.id === id);
+    this.changed('deleteAlbum', null, albums[indexAlbum]);
     albums.splice(indexAlbum, 1);
-    this.changed('deleteAlbum',albums[indexAlbum]);
   }
 
   getArtistAlbumTrack(id) {
@@ -269,7 +270,7 @@ class UNQfy extends Observable {
 
   removeTrack(id) {
     const artist = this.getArtistAlbumTrack(id);
-    this.changed('deleteTrack',this.updateAlbums(id, artist.albums));
+    this.changed('deleteTrack', null, null, this.updateAlbums(id, artist.albums));
   }
 
   printArtistsFor(string) {
@@ -353,6 +354,7 @@ class UNQfy extends Observable {
       this.addPlaylist(newPlaylist);
       return newPlaylist;
     } catch (error) {
+      this.changed('exception', null, null, null, error);
       throw error;
     }
   }
@@ -546,7 +548,7 @@ class UNQfy extends Observable {
   static load(filename) {
     const serializedData = fs.readFileSync(filename, { encoding: 'utf-8' });
     //COMPLETAR POR EL ALUMNO: Agregar a la lista todas las clases que necesitan ser instanciadas
-    const classes = [UNQfy, Author, IdAutoIncrement, IdAutoIncrementPlaylist, Album, Track, User, Playlist];
+    const classes = [UNQfy, Author, IdAutoIncrement, IdAutoIncrementPlaylist, Album, Track, User, Playlist, ObserverNewletter, ObserverLogging];
     return picklify.unpicklify(JSON.parse(serializedData), classes);
   }
 
