@@ -4,7 +4,7 @@ class Observer {
     
    } 
     
-   update(artist,album) {
+   update(artist,album,track) {
        throw Error('Override method subclass');
    }
 }

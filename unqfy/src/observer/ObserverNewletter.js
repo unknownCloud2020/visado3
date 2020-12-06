@@ -1,21 +1,34 @@
-const ClientAPI = require('../client/ClientAPI');
-const ClientAPIInstance = new ClientAPI.ClientAPI();
+const Observer = require("./Observer");
+const newletterClient = require('../');
+const newletterClientIntance = new newletterClient();
 
 class ObserverNewletter extends Observer {
 
-    constructor() {
-       this.uri = 'http://localhost:8084/api'
+  constructor() { }
+
+  update(action, artist, album, track) {
+    if (action === 'addAlbum') {
+      newletterCliente.notify(artist, album).then(
+        response => response
+      ).catch(
+        error => error
+      )
+
     }
 
-    update(artist,album,track) {
-      ClientAPIInstance.notify(this.uri + '/notify',artist,album).then(
-        response => 
-    ).catch(
+    if (action === 'deleteArtist') {
+      newletterCliente.notifyDeleteArtist(artist).then(
         response => response
-    )
-      
-      // endpoint
+      ).catch(
+        error => error
+      )
+
     }
+
+
+
+    // endpoint
+  }
 
 }
 

@@ -15,8 +15,6 @@ const Observable = require('./src/observer/Observable');
 const ObserverNewletter = require('./src/observer/ObserverNewletter');
 const ObserverLogging = require('./src/observer/ObserverLogging')
 const spotifyClientInstance = new spoCliente.SpotifyCliente();
-const LogginClient = require('./src/clientApi/LogginClient');
-const LogginClientInstance = new LogginClient.LogginClient()
 
 
 class UNQfy extends Observable {
@@ -49,7 +47,8 @@ class UNQfy extends Observable {
     const artist = new Author(artistData.name, artistData.country);
     artist.setId(this.idIncrementArtist.id);
     this.artists.push(artist);
-    this.changed(artist);
+    this.changed('add',artist.id);
+
     return artist;
   }
 
@@ -71,7 +70,6 @@ class UNQfy extends Observable {
     const regex = new RegExp(name, 'i');
     return this.artists.find(artist => artist.name.match(regex));
   }
-
 
   existAlbum(album) {
     if (this.isThereArtistInModel(album.name)) {
@@ -115,7 +113,7 @@ class UNQfy extends Observable {
     }
     album.setId(this.idIncrementAlbum.id);
     artistRecovered.setAlbum(album);
-    this.changed(artistRecovered,album);
+    this.changed('add',artistRecovered,album);
 
     return album;
   }
@@ -158,7 +156,7 @@ class UNQfy extends Observable {
     track.setId(this.idIncrementTrack.id);
     albumRecovered.setTrack(track);
     track.setAlbum(albumRecovered);
-    this.changed(track);
+    this.changed('add',track);
 
     return track;
   }
@@ -229,6 +227,7 @@ class UNQfy extends Observable {
     if (index !== -1) {
       this.artists.splice(index, 1);
     }
+    this.changed('deleteArtist',artists[index]);
   }
 
   removeAlbum(id) {
@@ -236,6 +235,7 @@ class UNQfy extends Observable {
     const albums = artist.albums;
     const indexAlbum = albums.findIndex(a => a.id === id);
     albums.splice(indexAlbum, 1);
+    this.changed('deleteAlbum',albums[indexAlbum]);
   }
 
   getArtistAlbumTrack(id) {
@@ -255,6 +255,7 @@ class UNQfy extends Observable {
   updateTracks(id, tracks) {
     const index = tracks.findIndex(t => t.id === id);
     tracks.splice(index, 1);
+    return index;
   }
   
   updateArtist(id, artist) {
@@ -269,7 +270,7 @@ class UNQfy extends Observable {
 
   removeTrack(id) {
     const artist = this.getArtistAlbumTrack(id);
-    this.updateAlbums(id, artist.albums);
+    this.changed('deleteTrack',this.updateAlbums(id, artist.albums));
   }
 
   printArtistsFor(string) {
