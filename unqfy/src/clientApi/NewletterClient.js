@@ -39,4 +39,4 @@ class NewletterClient {
 
 }
 
-module.exports = UnqfyClient;
+module.exports = NewletterClient;

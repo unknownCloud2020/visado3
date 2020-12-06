@@ -27,7 +27,7 @@ var log4js = require("log4js");
 
 var logger = log4js.getLogger();
 log4js.configure({
-    appenders: { cheese: { type: "file", filename: path.join(__dirname, 'log/cheese.log') } },
+    appenders: { cheese: { type: "file", filename: path.join(__dirname, 'cheese.log') } },
     categories: { default: { appenders: ["cheese"], level: "info" } }
 });
 

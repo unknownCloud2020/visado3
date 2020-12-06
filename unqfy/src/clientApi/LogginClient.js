@@ -17,7 +17,7 @@ class LogginClient {
     async info(message) {
         this.options.body = { message: message, level: 'info', service: 'unqfy' };
         rp.post(this.options).then(succes => {
-            console.log(succes)
+            
         }).catch(error => console.log(error));
     }
 
