@@ -7,9 +7,11 @@ const BadRequestError = require('./BadRequestError');
 const port = process.env.PORT || 8086;
 const app = express();
 
+let serviceEnable = true;
+
 // configs
-var winston  = require('winston');
-var winlog  = require('winston-loggly-bulk');
+var winston = require('winston');
+var winlog = require('winston-loggly-bulk');
 winston.add(new winlog.Loggly({
     token: "fd403c22-8509-4baf-8ad0-f659c527b137",
     subdomain: "unknownCloud",
@@ -37,20 +39,25 @@ app.listen(port, () => console.log('Listening on ' + port));
 // end points
 app.post('/api/log', function (req, res, next) {
 
-    checkValidInput(req.body, { level: 'string', message: 'string', service: 'string' }, res, next);
+    if (serviceEnable) {
+        checkValidInput(req.body, { level: 'string', message: 'string', service: 'string' }, res, next);
 
-    logger.level = 'info';
-    logger.info(req.body.service);
+        logger.level = 'info';
+        logger.info(req.body.service);
 
-    logger.level = req.body.level;
-    const logAction = builderLogActionByType[req.body.level];
-    logAction(req.body.message)
+        logger.level = req.body.level;
+        const logAction = builderLogActionByType[req.body.level];
+        logAction(req.body.message)
 
-    winston.log('info', req.body.service);
-    winston.log(req.body.level, req.body.message);
+        winston.log('info', req.body.service);
+        winston.log(req.body.level, req.body.message);
 
-    res.status(200);
-    res.json("ok");
+        res.status(200);
+        res.json("ok");
+    } else {
+        res.status(200)
+        res.json("El servicio se encuentra desactivado")
+    }
 });
 
 app.get('/api/ping', function (req, res) {
@@ -59,15 +66,15 @@ app.get('/api/ping', function (req, res) {
 });
 
 app.post('/api/shutdown', function (req, res) {
-    // unqfy desubscribir servicio
+    serviceEnable = false;
     res.status(200);
-    res.json("pong");
+    res.json("Servicio desactivado");
 });
 
 app.post('/api/poweron', function (req, res) {
-    // unqfy subscribir servicio
+    serviceEnable = true;
     res.status(200);
-    res.json("pong");
+    res.json("Servicio activado");
 });
 
 // functions
@@ -78,10 +85,10 @@ const warningAction = msg => logger.warn(msg);
 const debugAction = msg => logger.debug(msg);
 
 const builderLogActionByType = {
-  'error': errorAction,
-  'warning': warningAction,
-  'info': infoAction,
-  'debug': debugAction
+    'error': errorAction,
+    'warning': warningAction,
+    'info': infoAction,
+    'debug': debugAction
 };
 
 function valid(data, expectedKeys) {
