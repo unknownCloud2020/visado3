@@ -1,5 +1,5 @@
 const Observer = require("./Observer");
-const newletterClient = require('../clientApi/NewletterClient');
+const newletterClient = require('../clientApi/NewsletterClient');
 const newletterClientIntance = new newletterClient();
 
 class ObserverNewletter extends Observer {

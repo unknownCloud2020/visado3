@@ -17,7 +17,7 @@ const artists = express();
 const albums = express();
 const tracks = express();
 const playlists = express();
-const users = express();1
+const users = express();
 const bodyParse = require('body-parser');
 const port = process.env.PORT || 8083;
 const unqfy = new unq.UNQfy();
@@ -69,6 +69,7 @@ artists.post('/artists', (req, res, next) => {
 
 
 artists.get('/artists/:artistId', (req, res, next) => {
+    
     const artistId = parseInt(req.params.artistId);
 
     const artist = req.unqfy.getArtistById(artistId);
