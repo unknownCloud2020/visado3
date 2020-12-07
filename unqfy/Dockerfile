@@ -10,9 +10,9 @@ ENV DEBUG=true
 WORKDIR /home/node/unqfy
 
 # Copia el package.json package-lock.json en /home/node/my_node_app
-COPY package.json .
-COPY package-lock.json .
-
+# COPY package.json .
+# COPY package-lock.json .
+COPY . .
 # Ejecuta npm install. Esto produce que se instalen todas las dependencias necearias para correr la aplicación
 RUN ["npm", "install"]
 
