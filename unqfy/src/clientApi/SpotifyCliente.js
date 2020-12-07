@@ -7,7 +7,7 @@ const BASE_URL = 'https://api.spotify.com/v1/';
 
 class SpotifyCliente {
     constructor() {
-        this.options = this.getOptionsRequest();
+        //this.options = this.getOptionsRequest();
     }
 
     getOptionsRequest() {

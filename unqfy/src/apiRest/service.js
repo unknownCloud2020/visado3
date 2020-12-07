@@ -2,6 +2,8 @@
 /* eslint-disable no-unused-vars */
 const unq = require('../../unqfy');
 const express = require('express');
+const fs = require('fs')
+const path = require('path')
 const errors = require('./errors/index');
 const badRequest = require('./errors/BadRequestError');
 const duplicateArtist = require('./errors/DuplicateArtistError');
@@ -248,6 +250,12 @@ playlists.get('/playlists', (req, res, next) => {
     const durationLT = parseInt(req.query.durationLT);
     const durationGT = parseInt(req.query.durationGT);
     res.status(200).json(req.unqfy.searchPlaylist(name, durationLT, durationGT));
+});
+
+rootApp.get('/api/deleteData', function (req, res) {
+    fs.unlinkSync(path.resolve('unqfy/data.json'))
+    res.status(200);
+    res.json("deleteData");
 });
 
 rootApp.get('/api/ping', function (req, res) {
