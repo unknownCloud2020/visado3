@@ -1,5 +1,5 @@
 const rp = require('request-promise');
-const BASE_URL = 'http://localhost:8083/api' + '/';
+const BASE_URL = process.env.UNQFY_API_HOST + '/';
 
 class UnqfyClient {
 
