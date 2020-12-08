@@ -1,6 +1,6 @@
 const rp = require('request-promise');
 
-class NewletterClient {
+class NewsletterClient {
 
     constructor() {
         this.BASE_URL = process.env.NEWSLETTER_API_HOST + '/';
@@ -12,15 +12,12 @@ class NewletterClient {
             uri: this.BASE_URL + `notify`,
             json: true,
             body: {
-                "artistId": artist.artistId,
+                "artistId": artist.id,
                 "subject": `Nuevo Album para artsta ${artist.name}`, 
                 "message": `Se ha agregado el album ${album.name} al artista ${artist.name}`
                 }
         };
-
-        return rp.post(this.options).then(response => {
-            return response;
-        }).catch(error => { throw error });
+            rp.post(options);
     }
 
     async notifyDeleteArtist(artist) {
@@ -31,12 +28,10 @@ class NewletterClient {
             body: {"artistId": artist.artistId}
         };
 
-        return rp.delete(this.options).then(response => {
-            return response;
-        }).catch(error => { throw error });
+        rp.post(options);
     } 
 
 
 }
 
-module.exports = NewletterClient;
+module.exports = NewsletterClient;

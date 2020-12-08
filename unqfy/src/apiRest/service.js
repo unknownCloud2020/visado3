@@ -123,27 +123,19 @@ artists.get('/artists', (req, res, next) => {
 });
 
 albums.post('/albums', (req, res, next) => {
-
-    try {
-        checkValidInput(req.body, { artistId: 'number', name: 'string', year: 'number' }, res, next);
-
-        const params = req.body;
-        const albumParam = { name: params.name, year: params.year };
-        const existArtist = req.unqfy.getArtistById(params.artistId);
-        const existAlbum = req.unqfy.isThereAlbumInModel(params.name);
+  
+    checkValidInput(req.body, { artistId: 'number', name: 'string', year: 'number' }, res, next);
     
-        if (!existArtist) {
-            throw next(new nonExistentArtistForAddAlbumError());
-        }
-        else if (existAlbum) {
-            throw next(new duplicateAlbumError());
-        }
-    
-        const newAlbum = req.unqfy.addAlbum(params.artistId, albumParam);
-        req.unqfy.save();
-        res.status(201).json(newAlbum);
-    } catch (error) {
-        console.log(error)
+    const params = req.body;
+    const albumParam = { name: params.name, year: params.year };
+    const existArtist = req.unqfy.getArtistById(params.artistId);
+    const existAlbum = req.unqfy.isThereAlbumInModel(params.name);
+   
+    if (!existArtist) {
+        throw next(new nonExistentArtistForAddAlbumError());
+    }
+    else if (existAlbum) {
+        throw next(new duplicateAlbumError());
     }
 
 

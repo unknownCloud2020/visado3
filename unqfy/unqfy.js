@@ -9,7 +9,7 @@ const Playlist = require('./src/entity/Playlist');
 const Album = require('./src/entity/Album');
 const Track = require('./src/entity/Track');
 const User = require('./src/entity/User');
-const SAVE_FILENAME = path.join(__dirname, 'app_data/data.json');
+const SAVE_FILENAME = path.join(__dirname, 'data.json');
 const spoCliente = require('./src/clientApi/SpotifyCliente');
 const Observable = require('./src/observer/Observable');
 const ObserverNewletter = require('./src/observer/ObserverNewletter');
@@ -28,7 +28,7 @@ class UNQfy extends Observable {
     this.idIncrementAlbum = new IdAutoIncrement();
     this.idIncrementTrack = new IdAutoIncrement();
     this.idIncrementUser = new IdAutoIncrement();
-    this.addSubscribe(new ObserverNewletter());
+    //this.addSubscribe(new ObserverNewletter());
     this.addSubscribe(new ObserverLogging());
   }
 
@@ -42,6 +42,7 @@ class UNQfy extends Observable {
       - una propiedad name (string)
       - una propiedad country (string)
     */
+   try {
     this.existArtist(artistData);
     this.idIncrementArtist.idAutoIncrement();
     const artist = new Author(artistData.name, artistData.country);
@@ -50,6 +51,10 @@ class UNQfy extends Observable {
     this.changed('addArtist', artist);
 
     return artist;
+   } catch (error) {
+     console.log(error)
+   }
+
   }
 
   existArtist(artist) {
