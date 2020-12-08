@@ -155,7 +155,7 @@ newletterApp.get('/subscriptions', async (req, res, next) => {
 
 
 newletterApp.delete('/subscriptions', (req, res, next) => {
-
+    console.log(req.body)
     checkValidInput(req.body, { artistId: 'number' }, res, next);
 
     try {

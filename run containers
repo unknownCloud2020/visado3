@@ -6,7 +6,7 @@ export LOGGIN_API_HOST=http://localhost:8086/api
 
 
 
-docker run --name unqfy -v unqfy_data:/home/node/unqfy/app_data -e TZ=America/Argentina/Buenos_Aires -d -p 8083:8083 --net unqfynet --ip 172.20.0.21 -e NEWSLETTER_API_HOST=http://172.20.0.22:8085/api -e LOGGIN_API_HOST=http://172.20.0.24:8086/api --user node unqfy
+docker run --name unqfy -v unqfy_data:/home/node/unqfy/app_data -e TZ=America/Argentina/Buenos_Aires -d -p 8083:8083 --net unqfynet --ip 172.20.0.21 -e NEWSLETTER_API_HOST=http://172.20.0.22:8084/api -e LOGGIN_API_HOST=http://172.20.0.24:8086/api unqfy
 docker run --name newsletter -v newsletter:/home/node/newletter  -e TZ=America/Argentina/Buenos_Aires -d -p 8084:8084 --net unqfynet --ip 172.20.0.22 -e UNQFY_API_HOST=http://172.20.0.21:8083/api --user node newsletter
 docker run --name monitor -e TZ=America/Argentina/Buenos_Aires -d -p 8085:8085 --net unqfynet --ip 172.20.0.23 -e UNQFY_API_HOST=http://172.20.0.21:8083/api -e NEWSLETTER_API_HOST=http://172.20.0.22:8084/api -e LOGGIN_API_HOST=http://172.20.0.24:8086/api --user node monitor
 docker run --name loggin -v loggin_data:/home/node/loggin  -e TZ=America/Argentina/Buenos_Aires -d -p 8086:8086 --net unqfynet --ip 172.20.0.24 --user node loggin

@@ -20,12 +20,12 @@ class NewsletterClient {
             rp.post(options);
     }
 
-    async notifyDeleteArtist(artist) {
+    async notifyDeleteArtist(artistId) {
  
         const options = {
             uri: this.BASE_URL + `subscriptions`,
             json: true,
-            body: {"artistId": artist.artistId}
+            body: {"artistId": artistId}
         };
 
         rp.post(options);
