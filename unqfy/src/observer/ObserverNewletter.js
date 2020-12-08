@@ -12,7 +12,7 @@ class ObserverNewletter extends Observer {
         newletterClientIntance.notify(artist, album);
         break;
       case 'deleteArtist':
-        newletterClientIntance.notifyDeleteArtist(artist);
+        newletterClientIntance.notifyDeleteArtist(artist.id);
         break;
     }
   }
