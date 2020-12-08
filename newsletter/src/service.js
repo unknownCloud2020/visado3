@@ -7,7 +7,8 @@ const unqfyCliente = require('../clients/UnqfyClient');
 const unqfyClientIntance = new unqfyCliente();
 const GMailAPIClient = require('../clients/GMailAPIClient');
 const gmailClient = new GMailAPIClient();
-
+const errors = require('./errors/index');
+const badRequest = require('./errors/BadRequestError')
 let suscritores = [];
 
 function valid(data, expectedKeys) {
@@ -30,14 +31,14 @@ function invalidJsonHandler(err, req, res, next) {
 }
 
 function errorHandler(error, req, res, next) {
-    //const isHandlerError = errors.find(error => error === error);
-    //if (isHandlerError) {
-     //   res.status(error.status);
-      //  res.json({ status: error.status, errorCode: error.errorCode });
-   // } else {
+    const isHandlerError = errors.find(error => error === error);
+    if (isHandlerError) {
+        res.status(error.status);
+        res.json({ status: error.status, errorCode: error.errorCode });
+    } else {
         res.status(500);
         res.json({ status: 500, errorCode: "INTERNAL_SERVER_ERROR" });
-    //}
+    }
 }
 
 
@@ -92,8 +93,8 @@ newletterApp.post('/subscribe', async (req, res, next) => {
 
 
 newletterApp.post('/notify', async(req, res, next) => {
-    //checkValidInput(req.body, { artistId: 'number', email: 'string' }, res, next);
-
+    checkValidInput(req.body, { artistId: 'number', email: 'string' }, res, next);
+  
     try {
         let suscritoresFiltrados = [];
         if (await existentArtist(req.body.artistId)) {
@@ -114,7 +115,7 @@ newletterApp.post('/notify', async(req, res, next) => {
 newletterApp.post('/unsubscribe', async (req, res, next) => {
     const suscritor = req.body;
 
-    //checkValidInput(req.body, { artistId: 'number', email: 'string' }, res, next);
+    checkValidInput(req.body, { artistId: 'number', email: 'string' }, res, next);
 
 
     try {
@@ -133,7 +134,9 @@ newletterApp.post('/unsubscribe', async (req, res, next) => {
 
 newletterApp.get('/subscriptions', async (req, res, next) => {
     const suscritoresFiltrados = []
-    console.log(req.query)
+
+    checkValidInput(req.query, { artistId: 'number' }, res, next);
+    console.log(suscritores)
     try {
 
         if (await existentArtist(req.query.artistId)) {
