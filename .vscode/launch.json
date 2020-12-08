@@ -9,7 +9,7 @@
             "type": "node",
             "request": "launch",
             "name": "newletter API",
-            "program": "${workspaceFolder}/newletter/src/service.js"
+            "program": "${workspaceFolder}/newsletter/src/service.js"
         },
         {
             "type": "node",

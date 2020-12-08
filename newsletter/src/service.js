@@ -7,7 +7,8 @@ const unqfyCliente = require('../clients/UnqfyClient');
 const unqfyClientIntance = new unqfyCliente();
 const GMailAPIClient = require('../clients/GMailAPIClient');
 const gmailClient = new GMailAPIClient();
-
+const errors = require('./errors/index');
+const badRequest = require('./errors/BadRequestError')
 let suscritores = [];
 
 function valid(data, expectedKeys) {
@@ -42,23 +43,16 @@ function errorHandler(error, req, res, next) {
 
 
 function isSucribe(email) {
-    return this.suscritores.any(s => s.email === email);
+    return suscritores.some(s => s.email === email);
 }
 
-function existentArtist(artistId) {
-    return unqfyClientIntance.artist(artistId).id === artistId;
+async function existentArtist(artistId) {
+    return await unqfyClientIntance.idArtist(artistId) === artistId;
 }
 
-function suscribesForArtistId(artistId) {
-
-    if (this.existentArtist(artistId)) {
-        const suscritoresFiltrados = this.suscritores.filter(s => s.artistId === artistId);
-        return suscritoresFiltrados;
-    }
-
-}
 
 function send_mail(body,email) {
+    console.log(body,email)
     gmailClient.send_mail(
         body.subject,
         [
@@ -68,6 +62,7 @@ function send_mail(body,email) {
             "email": email,
         },
         {
+            "name": "Unqfy Neswsletter",
             "email": "unqfyNewsletter@gmail.com",
         }
     ).then((gmailResponse) => {
@@ -79,70 +74,83 @@ function send_mail(body,email) {
     })
 }
 
-newletterApp.post('/subscribe', (req, res, next) => {
+newletterApp.post('/subscribe', async (req, res, next) => {
     checkValidInput(req.body, { artistId: 'number', email: 'string' }, res, next);
 
     const suscritor = req.body;
-
+    
     try {
-        if (!this.isSucribe(suscritor.email) && this.existentArtist(suscritor.artistId)) {
-            this.suscritores.add(suscritor);
+        if (!isSucribe(suscritor.email) && await existentArtist(suscritor.artistId)) {
+            suscritores.push(suscritor);
+            
         }
     } catch (error) {
         throw error;
     }
-});
-
-
-
-
-newletterApp.post('/notify', (req, res, next) => {
-    //checkValidInput(req.body, { artistId: 'number', email: 'string' }, res, next);
-
-    try {
-        this.suscribesForArtistId(req.body.artistId).forEach(s => { send_mail(req.body,s[1]) });
-
-    } catch (error) {
-        throw error;
-    }
-
     res.status(200);
+    res.send();
 });
 
 
-newletterApp.post('/unsubscribe', (req, res, next) => {
-    const suscritor = req.body;
-
+newletterApp.post('/notify', async(req, res, next) => {
     checkValidInput(req.body, { artistId: 'number', email: 'string' }, res, next);
-
+  
     try {
-        if (this.isSucribe(suscritor.email) && this.existentArtist(suscritor.artistId)) {
-            this.suscritores.unshift(suscritor);
+        let suscritoresFiltrados = [];
+        if (await existentArtist(req.body.artistId)) {
+          suscritoresFiltrados = suscritores.filter(s => s.artistId === req.body.artistId); 
         }
+    
+       await suscritoresFiltrados.forEach(s => { send_mail(req.body,s.email) });
 
     } catch (error) {
         throw error;
     }
-    res.status(200).json();
+
+    res.status(200)
+    res.send();
 });
 
-newletterApp.get('/subscriptions?artistId=<artistID>', (req, res, next) => {
+
+newletterApp.post('/unsubscribe', async (req, res, next) => {
+    const suscritor = req.body;
+
+    checkValidInput(req.body, { artistId: 'number', email: 'string' }, res, next);
+
+
+    try {
+        if (isSucribe(suscritor.email) && await existentArtist(suscritor.artistId)) {
+            const index = suscritores.findIndex(s => s.artistId === suscritor.artistId);
+            suscritores.splice(index, 1,suscritor);
+        }
+        console.log(suscritores);
+
+    } catch (error) {
+        throw error;
+    }
+    res.status(200);
+    res.send();
+});
+
+newletterApp.get('/subscriptions', async (req, res, next) => {
     const suscritoresFiltrados = []
 
+    checkValidInput(req.query, { artistId: 'number' }, res, next);
+    console.log(suscritores)
     try {
 
-        if (this.existentArtist(suscritor.artistId)) {
-            suscritoresFiltrados = this.suscritores.filter(s => s.artistId === req.query.artistId);
+        if (await existentArtist(req.query.artistId)) {
+          suscritoresFiltrados = suscritores.filter(s => s.artistId === req.query.artistId); 
         }
 
     } catch (error) {
         throw error;
     }
 
-    res.status(200).json({
-        artistId: req.query.artistId,
-        subscriptors: suscritoresFiltrados
-    });
+    res.status(200).json( {
+        "artistId": req.query.artistId,
+        "subscriptors": suscritoresFiltrados
+      })
 });
 
 
@@ -151,12 +159,13 @@ newletterApp.delete('/subscriptions', (req, res, next) => {
     checkValidInput(req.body, { artistId: 'number' }, res, next);
 
     try {
-        this.suscritores = this.suscribesForArtistId(req.body.artistId).filter(s => { !s.artistId === req.body.artistId });
+        suscritores = suscribesForArtistId(req.body.artistId).filter(s => { !s.artistId === req.body.artistId });
     } catch (error) {
         throw error;
     }
 
     res.status(200);
+    res.send();
 });
 
 rootApp.get('/api/ping', function (req, res) {
