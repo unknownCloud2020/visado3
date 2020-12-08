@@ -42,7 +42,6 @@ class UNQfy extends Observable {
       - una propiedad name (string)
       - una propiedad country (string)
     */
-   try {
     this.existArtist(artistData);
     this.idIncrementArtist.idAutoIncrement();
     const artist = new Author(artistData.name, artistData.country);
@@ -51,10 +50,6 @@ class UNQfy extends Observable {
     this.changed('addArtist', artist);
 
     return artist;
-   } catch (error) {
-     console.log(error)
-   }
-
   }
 
   existArtist(artist) {

@@ -67,6 +67,7 @@ artists.post('/artists', (req, res, next) => {
         res.status(201)
         res.json(artist);
     } catch (error) {
+        console.log(error)
         throw next(new duplicateArtist());
     }
 });
@@ -137,8 +138,10 @@ albums.post('/albums', (req, res, next) => {
     else if (existAlbum) {
         throw next(new duplicateAlbumError());
     }
-
-
+    
+    const newAlbum = req.unqfy.addAlbum(params.artistId, albumParam);
+    req.unqfy.save();
+    res.status(201).json(newAlbum);
 });
 
 albums.get('/albums/:albumId', (req, res, next) => {
