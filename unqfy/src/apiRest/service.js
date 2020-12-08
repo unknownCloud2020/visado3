@@ -50,6 +50,7 @@ function errorHandler(error, req, res, next) {
         res.status(error.status);
         res.json({ status: error.status, errorCode: error.errorCode });
     } else {
+        console.log(error)
         res.status(500);
         res.json({ status: 500, errorCode: "INTERNAL_SERVER_ERROR" });
     }
@@ -63,7 +64,8 @@ artists.post('/artists', (req, res, next) => {
     try {
         artist = req.unqfy.addArtist(req.body);
         req.unqfy.save();
-        res.status(201).json(artist);
+        res.status(201)
+        res.json(artist);
     } catch (error) {
         throw next(new duplicateArtist());
     }
@@ -79,7 +81,8 @@ artists.get('/artists/:artistId', (req, res, next) => {
         throw next(new nonExistentArtist());
     }
     
-    res.status(200).json(artist);
+    res.status(200)
+    res.json(artist);
 });
 
 
@@ -108,7 +111,8 @@ artists.delete('/artists/:artistId', (req, res, next) => {
     }
     req.unqfy.removeArtist(artistId);
     req.unqfy.save();
-    res.status(204).json({ message: `delete artist:${artist.getId()}` });
+    res.status(204)
+    res.json({ message: `delete artist:${artist.getId()}` });
 
 });
 
@@ -119,23 +123,28 @@ artists.get('/artists', (req, res, next) => {
 
 albums.post('/albums', (req, res, next) => {
 
-    checkValidInput(req.body, { artistId: 'number', name: 'string', year: 'number' }, res, next);
+    try {
+        checkValidInput(req.body, { artistId: 'number', name: 'string', year: 'number' }, res, next);
 
-    const params = req.body;
-    const albumParam = { name: params.name, year: params.year };
-    const existArtist = req.unqfy.getArtistById(params.artistId);
-    const existAlbum = req.unqfy.isThereAlbumInModel(params.name);
-
-    if (!existArtist) {
-        throw next(new nonExistentArtistForAddAlbumError());
+        const params = req.body;
+        const albumParam = { name: params.name, year: params.year };
+        const existArtist = req.unqfy.getArtistById(params.artistId);
+        const existAlbum = req.unqfy.isThereAlbumInModel(params.name);
+    
+        if (!existArtist) {
+            throw next(new nonExistentArtistForAddAlbumError());
+        }
+        else if (existAlbum) {
+            throw next(new duplicateAlbumError());
+        }
+    
+        const newAlbum = req.unqfy.addAlbum(params.artistId, albumParam);
+        req.unqfy.save();
+        res.status(201).json(newAlbum);
+    } catch (error) {
+        console.log(error)
     }
-    else if (existAlbum) {
-        throw next(new duplicateAlbumError());
-    }
 
-    const newAlbum = req.unqfy.addAlbum(params.artistId, albumParam);
-    req.unqfy.save();
-    res.status(201).json(newAlbum);
 
 });
 
@@ -145,7 +154,8 @@ albums.get('/albums/:albumId', (req, res, next) => {
     if (!album) {
         throw next(new nonExistentAlbumError());
     }
-    res.status(200).json(album);
+    res.status(200)
+    res.json(album);
 });
 
 albums.patch('/albums/:albumId', (req, res, next) => {
@@ -169,14 +179,16 @@ albums.delete('/albums/:albumId', (req, res, next) => {
     }
     req.unqfy.removeAlbum(albumId);
     req.unqfy.save();
-    res.status(204).json({ message: `delete artist:${albumId}` });
+    res.status(204)
+    res.json({ message: `delete artist:${albumId}` });
 
 });
 
 albums.get('/albums', (req, res, next) => {
     const nameQueryParam = req.query.name || '';
     const albums = req.unqfy.filterAlbumsByName(nameQueryParam);
-    res.status(200).json(albums);
+    res.status(200)
+    res.json(albums);
 });
 
 async function getLyrics(trackId, req, res, trackName) {
@@ -212,7 +224,8 @@ playlists.post('/playlists', (req, res, next) => {
     try {
         req.unqfy.addPlaylist(newPlaylist);
         req.unqfy.save();
-        res.status(200).json(newPlaylist);
+        res.status(200)
+        res.json(newPlaylist);
     } catch (error) {
         throw next(new nonExistentTrackForAddPlaylist());
     }
@@ -228,7 +241,8 @@ playlists.get('/playlists/:playlistId', (req, res, next) => {
         throw next(new nonExistentPlaylist());
     }
 
-    res.status(200).json(JSON.parse(playlist));
+    res.status(200)
+    res.json(JSON.parse(playlist));
 });
 
 
@@ -242,7 +256,8 @@ playlists.delete('/playlists/:playlistId', (req, res, next) => {
     }
 
     req.unqfy.save();
-    res.status(204).json({ message: `delete playlist:${playlistId}` });
+    res.status(204)
+    res.json({ message: `delete playlist:${playlistId}` });
 });
 
 playlists.get('/playlists', (req, res, next) => {

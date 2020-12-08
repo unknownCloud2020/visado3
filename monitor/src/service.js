@@ -39,18 +39,18 @@ function checkServicesStatus() {
 
 function notify(service) {
     if (service.lastState !== service.state) {
-        console.log(`[${new Date(service.time).toTimeString()}] El servicio ${service.name} se encuentra ${service.state}`);
-        ClientDiscordHookInstance.notify(`[${new Date(service.time).toTimeString()}] El servicio ${service.name} se encuentra ${service.state}`)
+        console.log(`[${new Date(service.time).toLocaleTimeString()}] El servicio ${service.name} se encuentra ${service.state}`);
+        ClientDiscordHookInstance.notify(`[${new Date(service.time).toLocaleTimeString() }] El servicio ${service.name} se encuentra ${service.state}`)
         service.lastState = service.state;
     }
 }
 
-function shutdownInterval(){
+function shutdownInterval() {
     console.log('Monitor desactivado');
     clearInterval(interval);
 }
 
-function setIntervalOn(){
+function setIntervalOn() {
     console.log('Monitor activado');
     interval = setInterval(checkServicesStatus, 5000)
 }
