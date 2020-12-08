@@ -6,24 +6,15 @@ class ObserverNewletter extends Observer {
 
 
   update(action, artist, album, track, error) {
-    if (action === 'addAlbum') {
-      newletterClientIntance.notify(artist, album).then(
-        response => response
-      ).catch(
-        error => error
-      )
 
+    switch (action) {
+      case 'addAlbum':
+        newletterClientIntance.notify(artist, album);
+        break;
+      case 'deleteArtist':
+        newletterClientIntance.notifyDeleteArtist(artist);
+        break;
     }
-
-    if (action === 'deleteArtist') {
-      newletterClientIntance.notifyDeleteArtist(artist).then(
-        response => response
-      ).catch(
-        error => error
-      )
-
-    }
-
   }
 
 }

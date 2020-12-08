@@ -119,14 +119,14 @@ artists.get('/artists', (req, res, next) => {
 });
 
 albums.post('/albums', (req, res, next) => {
-
+  
     checkValidInput(req.body, { artistId: 'number', name: 'string', year: 'number' }, res, next);
-
+    
     const params = req.body;
     const albumParam = { name: params.name, year: params.year };
     const existArtist = req.unqfy.getArtistById(params.artistId);
     const existAlbum = req.unqfy.isThereAlbumInModel(params.name);
-
+   
     if (!existArtist) {
         throw next(new nonExistentArtistForAddAlbumError());
     }
