@@ -159,13 +159,7 @@ newletterApp.delete('/subscriptions', async (req, res, next) => {
 
     checkValidInput(req.body, { artistId: 'number' }, res, next);
 
-    try {
-        if (await existentArtist(req.body.artistId)) {
-            suscritores = suscritores.filter(s => s.artistId !== req.body.artistId);
-        }
-    } catch (error) {
-        throw error;
-    }
+    suscritores = suscritores.filter(s => s.artistId !== req.body.artistId);
 
     res.status(200);
     res.send();
@@ -178,13 +172,13 @@ rootApp.get('/api/ping', function (req, res) {
 
 rootApp.use(bodyParse.urlencoded({ extended: true }));
 rootApp.use(bodyParse.json());
-rootApp.use(invalidJsonHandler);
+//rootApp.use(invalidJsonHandler);
 rootApp.use('/api', newletterApp);
 
-rootApp.use((req, res) => {
-    res.status(404);
-    res.json({ status: 404, errorCode: 'RESOURCE_NOT_FOUND' });
-});
+// rootApp.use((req, res) => {
+//     res.status(404);
+//     res.json({ status: 404, errorCode: 'RESOURCE_NOT_FOUND' });
+// });
 
 rootApp.use(errorHandler);
 

@@ -1,4 +1,5 @@
 const rp = require('request-promise');
+const errors = require('../src/errors');
 const BASE_URL = process.env.UNQFY_API_HOST + '/';
 
 class UnqfyClient {
@@ -17,7 +18,7 @@ class UnqfyClient {
 
         return rp.get(options).then(response => {
             return response.id;
-        }).catch(error => { throw error });
+        }).catch(error => console.log(error));
     }
 
 
