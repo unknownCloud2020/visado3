@@ -28,7 +28,7 @@ class NewsletterClient {
             body: {"artistId": artistId}
         };
 
-        rp.post(options);
+        rp.delete(options);
     } 
 
 
