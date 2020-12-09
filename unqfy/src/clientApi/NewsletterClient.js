@@ -17,7 +17,7 @@ class NewsletterClient {
                 "message": `Se ha agregado el album ${album.name} al artista ${artist.name}`
                 }
         };
-            rp.post(options).catch(er => console.log(er));
+            rp.post(options).catch(error => console.log(error));
     }
 
     async notifyDeleteArtist(artistId) {
