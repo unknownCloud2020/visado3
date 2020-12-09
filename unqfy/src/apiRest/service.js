@@ -34,12 +34,14 @@ function valid(data, expectedKeys) {
 
 function checkValidInput(data, expectedKeys, res, next) {
     if (!valid(data, expectedKeys)) {
+        unqfy.changed('exception', null, null, null, new badRequest())
         throw next(new badRequest());
     }
 }
 
 function invalidJsonHandler(err, req, res, next) {
     if (err) {
+        unqfy.changed('exception', null, null, null, new badRequest())
         throw next(new badRequest());
     }
 }
@@ -47,10 +49,11 @@ function invalidJsonHandler(err, req, res, next) {
 function errorHandler(error, req, res, next) {
     const isHandlerError = errors.find(error => error === error);
     if (isHandlerError) {
+        unqfy.changed('exception', null, null, null, new Error(error.errorCode))
         res.status(error.status);
         res.json({ status: error.status, errorCode: error.errorCode });
     } else {
-        console.log(error)
+        unqfy.changed('exception', null, null, null, new Error('INTERNAL_SERVER_ERROR'))
         res.status(500);
         res.json({ status: 500, errorCode: "INTERNAL_SERVER_ERROR" });
     }
